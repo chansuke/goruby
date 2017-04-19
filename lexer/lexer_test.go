@@ -49,6 +49,7 @@ module Abc
 end
 class Abc
 end
+A::B
 `
 
 	tests := []struct {
@@ -179,6 +180,10 @@ end
 		{token.CONST, "Abc"},
 		{token.NEWLINE, "\n"},
 		{token.END, "end"},
+		{token.NEWLINE, "\n"},
+		{token.CONST, "A"},
+		{token.SCOPE, "::"},
+		{token.CONST, "B"},
 		{token.NEWLINE, "\n"},
 		{token.EOF, ""},
 	}

@@ -49,6 +49,8 @@ const (
 	LBRACKET // [
 	RBRACKET // ]
 
+	SCOPE // ::
+
 	// Keywords
 
 	DEF

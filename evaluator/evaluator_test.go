@@ -235,6 +235,8 @@ end
 	}
 }
 
+func TestScopedIdentifierExpression(t *testing.T) {}
+
 func TestVariableAssignmentExpression(t *testing.T) {
 	tests := []struct {
 		input    string

@@ -132,6 +132,11 @@ func startLexer(l *Lexer) StateFn {
 	case '"':
 		return lexString
 	case ':':
+		if r := l.peek(); r == ':' {
+			l.next()
+			l.emit(token.SCOPE)
+			return startLexer
+		}
 		return lexSymbol
 	case '.':
 		l.emit(token.DOT)
