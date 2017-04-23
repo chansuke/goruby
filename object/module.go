@@ -43,7 +43,8 @@ func (m *Module) addMethod(name string, method RubyMethod) {
 }
 
 var moduleMethods = map[string]RubyMethod{
-	"ancestors": withArity(0, publicMethod(moduleAncestors)),
+	"ancestors":        withArity(0, publicMethod(moduleAncestors)),
+	"included_modules": withArity(0, publicMethod(moduleIncludedModules)),
 }
 
 func moduleAncestors(context CallContext, args ...RubyObject) (RubyObject, error) {
