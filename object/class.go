@@ -4,7 +4,14 @@ import (
 	"fmt"
 )
 
-var classClass RubyClassObject = &class{name: "Class", superClass: moduleClass, instanceMethods: NewMethodSet(classInstanceMethods)}
+var classClass RubyClassObject = &class{
+	name:            "Class",
+	superClass:      moduleClass,
+	instanceMethods: NewMethodSet(classInstanceMethods),
+	builder:         func(c RubyClassObject) RubyObject { return &classInstance{class: c} },
+}
+
+var notInstantiatable = func(RubyClassObject) RubyObject { return nil }
 
 func init() {
 	classClass.(*class).class = classClass
@@ -12,8 +19,14 @@ func init() {
 }
 
 // newClass returns a new Ruby Class
-func newClass(name string, superClass RubyClass, instanceMethods, classMethods map[string]RubyMethod) *class {
-	return &class{name: name, superClass: superClass, instanceMethods: NewMethodSet(instanceMethods), class: newEigenclass(classClass, classMethods)}
+func newClass(name string, superClass RubyClass, instanceMethods, classMethods map[string]RubyMethod, builder func(RubyClassObject) RubyObject) *class {
+	return &class{
+		name:            name,
+		superClass:      superClass,
+		instanceMethods: NewMethodSet(instanceMethods),
+		class:           newEigenclass(classClass, classMethods),
+		builder:         builder,
+	}
 }
 
 // class represents a Ruby Class object
@@ -22,6 +35,7 @@ type class struct {
 	superClass      RubyClass
 	class           RubyClass
 	instanceMethods SettableMethodSet
+	builder         func(RubyClassObject) RubyObject
 }
 
 func (c *class) Inspect() string {
@@ -39,6 +53,9 @@ func (c *class) SuperClass() RubyClass {
 }
 func (c *class) Methods() MethodSet {
 	return c.instanceMethods
+}
+func (c *class) New() RubyObject {
+	return c.builder(c)
 }
 
 var classClassMethods = map[string]RubyMethod{}
